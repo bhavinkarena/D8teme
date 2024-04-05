@@ -23,6 +23,13 @@ const userSchema = new Schema(
     phone: {
       type: String,
     },
+    otp: {
+      type: String,
+      default: null,
+    },
+    otpExpiration: {
+      type: Date,
+    },
     is_active: {
       type: Boolean,
       default: false,
