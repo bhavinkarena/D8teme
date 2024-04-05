@@ -30,13 +30,11 @@ const generateAccessAndRefereshTokens = async (userId) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { phone, email, password, confirmPassword } = req.body;
+  const { email, password, confirmPassword } = req.body;
 
   // Check if any field is empty
   if (
-    [phone, email, password, confirmPassword].some(
-      (field) => field?.trim() === ""
-    )
+    [email, password, confirmPassword].some((field) => field?.trim() === "")
   ) {
     throw new ApiError(400, "All fields are required");
   }
@@ -46,9 +44,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Passwords do not match");
   }
 
-  const existedEmp = await User.findOne({
-    $or: [{ phone }, { email }],
-  });
+  const existedEmp = await User.findOne({ email });
 
   if (existedEmp) {
     throw new ApiError(
@@ -58,10 +54,10 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const user = await User.create({
-    phone,
     email,
     password,
   });
+
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
@@ -77,20 +73,20 @@ const registerUser = asyncHandler(async (req, res) => {
     user._id
   );
 
-  const loggedInUser = await User.findById(user._id).select("-password");
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
 
-  return res
-    .json(
-      new ApiResponse(
-        200,
-        {
-          user: loggedInUser,
-          accessToken,
-          refreshToken,
-        },
-        "User register successfully"
-      )
-    );
+  return res.json(
+    new ApiResponse(
+      200,
+      {
+        user: loggedInUser,
+        accessToken,
+      },
+      "User register successfully"
+    )
+  );
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -116,17 +112,16 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const loggedInUser = await User.findById(user._id).select("-password");
 
-  return res
-    .json(
-      new ApiResponse(
-        200,
-        {
-          user: loggedInUser,
-          accessToken,
-        },
-        "User logged in successfully"
-      )
-    );
+  return res.json(
+    new ApiResponse(
+      200,
+      {
+        user: loggedInUser,
+        accessToken,
+      },
+      "User logged in successfully"
+    )
+  );
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -250,14 +245,20 @@ const facebookPassport = asyncHandler(async (passport) => {
 
 const verifyEmail = asyncHandler(async (req, res) => {
   try {
-    const user = await User.findOne(req.user._id);
+    const user = await User.findById(req.user._id);
     if (!user) {
       throw new ApiError(404, "User does not exist");
     }
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    res.cookie("otp", otp, { maxAge: 60000 });
 
+    // Save the OTP in the database
+    user.otp = otp;
+    user.otpExpiration = Date.now() + 5 * 60 * 1000; // OTP expires in 5 minutes
+    await user.save();
+
+    // Send the OTP email
     sendEmail(user.email, otp);
+
     return res.json({ message: "OTP sent successfully" });
   } catch (error) {
     console.error("Error validating email:", error);
@@ -266,30 +267,37 @@ const verifyEmail = asyncHandler(async (req, res) => {
 });
 
 const isValidate = asyncHandler(async (req, res) => {
-  const code = req.query;
-  if (parseInt(code.otp) === parseInt(req.cookies.otp)) {
-    res.clearCookie("otp");
-    const user = req.user?._id;
-    console.log(user);
-    const usercheck = await User.findOne({ _id: user });
-    console.log(usercheck);
-    if (usercheck) {
-      usercheck.valid_email = true;
-      await usercheck.save();
-      return res.status(200).json(
-        new ApiResponse(
-          200,
-          {
-            usercheck,
-          },
-          "User logged in successfully"
-        )
-      );
-    } else {
-      throw new ApiError(400, "Error in verify otp");
-    }
+  const { otp } = req.query;
+  const user = req.user;
+
+  if (!user) {
+    throw new ApiError(401, "User not authenticated");
+  }
+
+  const usercheck = await User.findOne({ _id: user._id });
+
+  if (!usercheck) {
+    throw new ApiError(404, "User not found");
+  }
+
+  if (parseInt(otp) === parseInt(usercheck.otp)) {
+    // Clear the OTP in the database
+    usercheck.otp = undefined;
+    usercheck.otpExpiration = undefined;
+    usercheck.valid_email = true;
+    await usercheck.save();
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          usercheck,
+        },
+        "User logged in successfully"
+      )
+    );
   } else {
-    throw new ApiError(400, "Invalid Otp");
+    throw new ApiError(400, "Invalid OTP");
   }
 });
 
@@ -331,47 +339,52 @@ const isValidate = asyncHandler(async (req, res) => {
 // });
 
 const verifyPhoneNumber = asyncHandler(async (req, res) => {
-  try {
-    const user = await User.findOne(req.user._id);
-    if (!user) {
-      throw new ApiError(404, "User does not exist");
-    }
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    // You need to implement a function (sendSMS) to send OTP via SMS
-    await sendSMS(user.phone, otp);
-    res.cookie("otp", otp, { maxAge: 60000 });
-    return res.json({ message: "OTP sent successfully" });
-  } catch (error) {
-    console.error("Error validating phone number:", error);
-    throw new ApiError(500, "Internal server error");
+  const { phone } = req.body;
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    throw new ApiError(404, "User does not exist");
   }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  // Save the OTP in the database
+  user.phone = phone;
+  user.otp = otp;
+  user.otpExpiration = Date.now() + 5 * 60 * 1000; // OTP expires in 5 minutes
+  await user.save();
+
+  await sendSMS(phone, otp);
+
+  return res.json({ message: "OTP sent successfully" });
 });
 
 const isPhoneNumberValid = asyncHandler(async (req, res) => {
-  const code = req.query;
+  const { otp } = req.query;
   const user = req.user;
-  if (parseInt(code.otp) === parseInt(req.cookies.otp)) {
-    res.clearCookie("otp");
-    const usercheck = await User.findOne({ _id: user._id });
+
+  // Find the user in the database
+  const usercheck = await User.findOne({ _id: user._id });
+
+  // Validate the OTP
+  if (usercheck && parseInt(otp) === parseInt(usercheck.otp)) {
+    // Clear the OTP in the database
+    usercheck.otp = undefined;
+    usercheck.otpExpiration = undefined;
     usercheck.valid_phone = true;
-    usercheck.save();
-    if (usercheck) {
-      return res.status(201).json(
-        new ApiResponse(
-          200,
-          {
-            usercheck,
-          },
-          "User phone number verified successfully"
-        )
-      );
-    } else {
-      throw new ApiError(400, "Error in verify phone number OTP");
-    }
+    await usercheck.save();
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          usercheck,
+        },
+        "User phone number verified successfully"
+      )
+    );
   }
+
   throw new ApiError(400, "Invalid Phone Number OTP");
 });
-
 
 
 export {
