@@ -4,10 +4,6 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { UserProfile } from "../models/userprofile.model.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
-import path from "path";
-import { fileURLToPath } from "url";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const createUser = asyncHandler(async (req, res) => {
   try {
@@ -19,12 +15,9 @@ const createUser = asyncHandler(async (req, res) => {
         DOB,
         gender,
         show_me,
-        member_status,
-        last_online_time,
-        height,
-        body_type,
-        bio_video_url,
-        bio_content,
+        looking_for,
+        Passions,
+        Sexuality
       } = req.body;
       const user = await User.findOne(req.user._id);
       const existedUser = await UserProfile.findOne({
@@ -37,40 +30,29 @@ const createUser = asyncHandler(async (req, res) => {
           "Employee with email or phone number already exists"
         );
       }
-      let flag = false;
-      let coverImageLocalPath;
-      if (
-        req.files &&
-        Array.isArray(req.files.profileImage) &&
-        req.files.profileImage.length > 0
-      ) {
-        coverImageLocalPath = req.files.profileImage[0].path;
-      } else {
-        flag = true;
-        coverImageLocalPath = path.join(
-          __dirname,
-          "..",
-          "static",
-          "profile.jpg"
-        );
-      }
 
-      const profileimage = await uploadOnCloudinary(coverImageLocalPath, flag);
+      let profileImageUrls = [];
+      if (req.files) {
+        const files = req.files;
+        for (const file of files) {
+          const coverImageLocalPath = file.path;
+          const profileimage = await uploadOnCloudinary(coverImageLocalPath);
+          profileImageUrls.push(profileimage.url);
+        }
+      }
+      
       const userprofile = await UserProfile.create({
         userID,
         firstname,
         lastname,
         DOB,
-        profileImage: profileimage?.url || "",
+        profileImage: profileImageUrls,
         email: user.email,
         gender,
         show_me,
-        member_status,
-        last_online_time,
-        height,
-        body_type,
-        bio_video_url,
-        bio_content,
+        looking_for,
+        Passions,
+        Sexuality
       });
       const createdUser = await UserProfile.findById(userprofile._id).select();
 

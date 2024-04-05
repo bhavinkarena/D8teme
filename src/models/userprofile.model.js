@@ -18,6 +18,7 @@ const userprofileSchema = new Schema(
         },
         lastname: {
             type: String,
+            required: true,
             lowercase: true,
             index: true
         },
@@ -38,42 +39,38 @@ const userprofileSchema = new Schema(
             type:Date,
             required: true
         },
-        profileImage: {
-            type: String,
-            require:true,
-        },
         gender:{
             type : String,
-            enum : ['Male', 'Female', 'Other'],
+            enum : ['Men', 'Women', 'Other'],
             require:true
+        },
+        show_gender:{
+            type : Boolean,
+            default: false,
         },
         show_me:{
             type : String,
-            enum: ['Male', 'Female', 'Other'],
+            enum: ['Men', 'Women', 'Other'],
             require:true
         },
-        member_status:{
-            type:Boolean,
-            default:false
+        looking_for:{
+            type : String,
+            enum: ['Men', 'Women', 'Other'],
+            require:true
         },
-        last_online_time:{
-            type:Date
+        profileImage: [
+            {
+              type: String,
+              require: true,
+            },
+        ],
+        Passions:{
+            type : String,
+            enum: ['Men', 'Women', 'Other'],
         },
-        height:{
-            type:String 
-        },
-        height_verification:{
-            type:Boolean,
-            default:false
-        },
-        body_type:{
-            type:String
-        },
-        bio_video_url:{
-            type:String 
-        },
-        bio_content:{
-            type:String
+        Sexuality:{
+            type : String,
+            enum: ['Men', 'Women', 'Other'],
         }
     },
     {

@@ -9,14 +9,7 @@ import {upload} from "../middlewares/multer.middleware.js"
 const userprofileRouter = Router();
 
 userprofileRouter.route("/userprofile/createuser").post(
-  verifyJWT,
-  upload.fields([
-    {
-      name: "profileImage",
-      maxCount: 1,
-    },
-  ]),
-  createUser
+  verifyJWT, upload.array('profileImage',5),createUser
 );
 userprofileRouter
   .route("/userprofile/updateuser")

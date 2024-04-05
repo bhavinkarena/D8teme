@@ -22,7 +22,7 @@ userRouter.route("/user/validateemail").get(verifyJWT, isValidate);
 userRouter.route("/user/logout").get(verifyJWT, logoutUser);
 // userRouter.route("/user/verifylink").get(verifyJWT,sendLinkMail)
 // userRouter.route("/user/validatelink").get(isValidate,isValidateLink)
-userRouter.route("/user/verifyPhoneNumber").get(verifyJWT, verifyPhoneNumber);
+userRouter.route("/user/verifyPhoneNumber").post(verifyJWT, verifyPhoneNumber);
 userRouter.route("/user/isPhoneNumberValid").get(verifyJWT, isPhoneNumberValid);
 
 userRouter.get(

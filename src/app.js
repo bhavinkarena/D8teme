@@ -18,10 +18,23 @@ app.use(cookieParser())
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+const origins = [
+  "*",
+  "http://192.168.50.245",
+  "http://192.168.50.245:8000",
+  "http://127.0.0.1",
+  "http://localhost",
+  "https://d8teme.onrender.com/",
+  "http://localhost:3000/"
+];
+
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    credentials: true
-}))
+  origin: origins,
+  credentials: true,
+  methods: ["*"],
+  allowedHeaders: ["*"]
+}));
+
 
 app.use(
     session({
