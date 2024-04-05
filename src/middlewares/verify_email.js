@@ -43,35 +43,4 @@ const sendEmail = async (recipient,otp) => {
   }
 };
 
-// export const sendLink = async (recipient, validationToken) => {
-//   if (recipient.includes('string')) {
-//     console.log('This was a test user.');
-//     return;
-//   }
-
-//   const transporter = nodemailer.createTransport({
-//     service: 'gmail',
-//     auth: {
-//       user: sender,
-//       pass: password,
-//     },
-//   });
-
-//   const mailOptions = {
-//     from: sender,
-//     to: recipient,
-//     subject: 'Please Verify Your D8teMe Profile!',
-//     text: `Please click the following link to validate the email you used to create your D8teMe Profile: http://localhost:5050/api/v1/user/validateemail?user_guid=${validationToken}`,
-//   };
-
-//   try {
-//     const info = await transporter.sendMail(mailOptions);
-//     console.log('Email sent: ' + info.response);
-//     console.log('Message sent!');
-    
-//   } catch (error) {
-//     console.error('Error sending email:', error);
-//   }
-// };
-
 export default sendEmail;

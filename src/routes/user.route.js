@@ -17,13 +17,11 @@ const userRouter = Router();
 
 userRouter.route("/user/register").post(registerUser);
 userRouter.route("/user/login").post(loginUser);
-userRouter.route("/user/verifyEmail").get(verifyJWT, verifyEmail);
-userRouter.route("/user/validateemail").get(verifyJWT, isValidate);
+userRouter.route("/user/verifyEmail").post(verifyJWT, verifyEmail);
+userRouter.route("/user/validateemail").post(verifyJWT, isValidate);
 userRouter.route("/user/logout").get(verifyJWT, logoutUser);
-// userRouter.route("/user/verifylink").get(verifyJWT,sendLinkMail)
-// userRouter.route("/user/validatelink").get(isValidate,isValidateLink)
 userRouter.route("/user/verifyPhoneNumber").post(verifyJWT, verifyPhoneNumber);
-userRouter.route("/user/isPhoneNumberValid").get(verifyJWT, isPhoneNumberValid);
+userRouter.route("/user/isPhoneNumberValid").post(verifyJWT, isPhoneNumberValid);
 
 userRouter.get(
   "/google",

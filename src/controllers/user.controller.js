@@ -237,7 +237,6 @@ const facebookPassport = asyncHandler(async (passport) => {
   });
 });
 
-
 const verifyEmail = asyncHandler(async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -296,42 +295,6 @@ const isValidate = asyncHandler(async (req, res) => {
   }
 });
 
-// const sendLinkMail = asyncHandler(async (req, res) => {
-//   try {
-//     // Find the user by user_guid
-//     const user = await User.findOne(req.user._id);
-//     if (!user) {
-//       return res.status(401).json({ message: "User Not Authorized." });
-//     }
-//     sendLink(user.email, user.user_guid);
-//     // Update the user's valid_email status
-//   } catch (error) {
-//     console.error("Error validating email:", error);
-//     return res.status(500).json({ message: "Internal Server Error" });
-//   }
-// });
-
-// const isValidateLink = asyncHandler(async (req, res) => {
-//   const guid = req.query;
-//   console.log(guid);
-
-//   const user = await User.findOne(guid);
-//   console.log(user);
-//   if (guid.user_guid === user.user_guid) {
-//     user.valid_email = true;
-//     console.log(user);
-//     await user.save();
-//     return res.json(
-//       new ApiResponse(
-//         200,
-//         {
-//           user,
-//         },
-//         "Your Email Has been validated. You may close this tab."
-//       )
-//     );
-//   }
-// });
 
 const verifyPhoneNumber = asyncHandler(async (req, res) => {
   const { phone } = req.body;
@@ -387,8 +350,6 @@ export {
   loginUser,
   verifyEmail,
   isValidate,
-  // sendLinkMail,
-  // isValidateLink,
   googlePassport,
   facebookPassport,
   logoutUser,

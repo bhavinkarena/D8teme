@@ -1,10 +1,11 @@
-import express from "express"
-import cors from "cors"
-import cookieParser from "cookie-parser"
-import passport from "passport"
-import session from "express-session"
-import { facebookPassport, googlePassport } from "./controllers/user.controller.js"
-const app = express()
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import passport from "passport";
+import session from "express-session";
+import { facebookPassport, googlePassport } from "./controllers/user.controller.js";
+
+const app = express();
 
 app.get("/",(req,res)=>{
     res.send("D8teme")
@@ -19,22 +20,30 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 const origins = [
-  "*",
-  "http://192.168.50.245",
-  "http://192.168.50.245:8000",
-  "http://127.0.0.1",
-  "http://localhost",
-  "https://d8teme.onrender.com/",
-  "http://localhost:3000/"
+    "http://192.168.50.245",
+    "http://192.168.50.245:8000",
+    "http://127.0.0.1",
+    "http://localhost",
+    "https://d8teme.onrender.com",
+    "http://localhost:3000"
 ];
 
 app.use(cors({
-  origin: origins,
-  credentials: true,
-  methods: ["*"],
-  allowedHeaders: ["*"]
+    origin: function(origin, callback){
+        // allow requests with no origin 
+        // (like mobile apps or curl requests)
+        if(!origin) return callback(null, true);
+        if(origins.indexOf(origin) === -1){
+          var msg = 'The CORS policy for this site does not ' +
+                    'allow access from the specified Origin.';
+          return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
-
 
 app.use(
     session({
@@ -42,12 +51,10 @@ app.use(
       resave: false,
       saveUninitialized: false,
     })
-  );
+);
 
 app.use(passport.initialize());
-
 app.use(passport.session());
-
 
 //user routes import
 import UserRouter from './routes/user.route.js'
