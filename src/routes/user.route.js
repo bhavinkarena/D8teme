@@ -17,10 +17,10 @@ const userRouter = Router();
 
 userRouter.route("/user/register").post(registerUser);
 userRouter.route("/user/login").post(loginUser);
-userRouter.route("/user/verifyEmail").post(verifyJWT, verifyEmail);
+userRouter.route("/user/verifyEmail").get(verifyJWT, verifyEmail);
 userRouter.route("/user/validateemail").post(verifyJWT, isValidate);
 userRouter.route("/user/logout").get(verifyJWT, logoutUser);
-userRouter.route("/user/verifyPhoneNumber").post(verifyJWT, verifyPhoneNumber);
+userRouter.route("/user/verifyPhoneNumber").get(verifyJWT, verifyPhoneNumber);
 userRouter.route("/user/isPhoneNumberValid").post(verifyJWT, isPhoneNumberValid);
 
 userRouter.get(

@@ -17,7 +17,7 @@ const createUser = asyncHandler(async (req, res) => {
         show_me,
         looking_for,
         Passions,
-        Sexuality
+        Sexuality,
       } = req.body;
       const user = await User.findOne(req.user._id);
       const existedUser = await UserProfile.findOne({
@@ -40,7 +40,7 @@ const createUser = asyncHandler(async (req, res) => {
           profileImageUrls.push(profileimage.url);
         }
       }
-      
+
       const userprofile = await UserProfile.create({
         userID,
         firstname,
@@ -52,7 +52,7 @@ const createUser = asyncHandler(async (req, res) => {
         show_me,
         looking_for,
         Passions,
-        Sexuality
+        Sexuality,
       });
       const createdUser = await UserProfile.findById(userprofile._id).select();
 
@@ -83,12 +83,9 @@ const updateUserDetails = asyncHandler(async (req, res) => {
     DOB,
     gender,
     show_me,
-    member_status,
-    last_online_time,
-    height,
-    body_type,
-    bio_video_url,
-    bio_content,
+    looking_for,
+    Passions,
+    Sexuality,
   } = req.body;
   //    console.log(req.body);
   const userID = await UserProfile.find({ userID: req.user._id });
@@ -101,12 +98,9 @@ const updateUserDetails = asyncHandler(async (req, res) => {
         DOB: DOB,
         gender: gender,
         show_me: show_me,
-        member_status: member_status,
-        last_online_time: last_online_time,
-        height: height,
-        body_type: body_type,
-        bio_video_url: bio_video_url,
-        bio_content: bio_content,
+        looking_for: looking_for,
+        Passions: Passions,
+        Sexuality: Sexuality,
       },
     },
     { new: true }
@@ -121,10 +115,10 @@ const getCurrentUser = asyncHandler(async (req, res) => {
   if (req.user.valid_email === true) {
     const userID = await UserProfile.find({ userID: req.user._id });
     const currentUser = await UserProfile.findById(userID[0]._id).select(
-      "firstname lastname email profileImage DOB gender show_me member_status height last_online_time body_type bio_video_url bio_content"
+      "firstname lastname email profileImage DOB gender show_me looking_for Passions Sexuality"
     );
-    if(!currentUser){
-      throw new ApiError(400,"User not Found")
+    if (!currentUser) {
+      throw new ApiError(400, "User not Found");
     }
     return res
       .status(200)

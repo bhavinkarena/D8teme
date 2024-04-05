@@ -5,9 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Strategy as GoogleStrategy } from "passport-google-oauth2";
 import sendEmail from "../middlewares/verify_email.js";
 import sendSMS from "../middlewares/verify_phone.js";
-// import sendLink from "../middlewares/verify_email.js"
 import { Strategy as FacebookStrategy } from "passport-facebook";
-// import { v4 as uuidv4 } from "uuid";
 
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
@@ -295,7 +293,6 @@ const isValidate = asyncHandler(async (req, res) => {
   }
 });
 
-
 const verifyPhoneNumber = asyncHandler(async (req, res) => {
   const { phone } = req.body;
   const user = await User.findById(req.user._id);
@@ -343,7 +340,6 @@ const isPhoneNumberValid = asyncHandler(async (req, res) => {
 
   throw new ApiError(400, "Invalid Phone Number OTP");
 });
-
 
 export {
   registerUser,
