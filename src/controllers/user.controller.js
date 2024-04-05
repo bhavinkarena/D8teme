@@ -262,7 +262,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
 });
 
 const isValidate = asyncHandler(async (req, res) => {
-  const { otp } = req.query;
+  const { otp } = req.body;
   const user = req.user;
 
   if (!user) {
@@ -354,7 +354,7 @@ const verifyPhoneNumber = asyncHandler(async (req, res) => {
 });
 
 const isPhoneNumberValid = asyncHandler(async (req, res) => {
-  const { otp } = req.query;
+  const { otp } = req.body;
   const user = req.user;
 
   // Find the user in the database
