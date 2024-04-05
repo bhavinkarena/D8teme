@@ -3,12 +3,10 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Strategy as GoogleStrategy } from "passport-google-oauth2";
-import { Google } from "../models/google.model.js";
 import sendEmail from "../middlewares/verify_email.js";
 import sendSMS from "../middlewares/verify_phone.js";
 // import sendLink from "../middlewares/verify_email.js"
 import { Strategy as FacebookStrategy } from "passport-facebook";
-import { Facebook } from "../models/facebook.model.js";
 // import { v4 as uuidv4 } from "uuid";
 
 const generateAccessAndRefereshTokens = async (userId) => {
@@ -162,43 +160,34 @@ const googlePassport = asyncHandler(async (passport) => {
         scope: ["profile", "email"],
       },
       async (accessToken, refreshToken, profile, done) => {
-        //get the user data from google
-        console.log(profile);
-        const newUser = {
-          googleId: profile.id,
-          displayName: profile.displayName,
-          firstName: profile.name.givenName,
-          lastName: profile.name.familyName,
-          image: profile.photos[0].value,
-          email: profile.emails[0].value,
-        };
-
         try {
-          //find the user in our database
-          let user = await Google.findOne({ googleId: profile.id });
-          if (user) {
-            //If user present in our database.
-            done(null, user);
-          } else {
-            // if user is not preset in our database save user data to database.
-            user = await Google.create(newUser);
-            done(null, user);
+          // Save the Google ID and email in the database
+          let user = await User.findOne({ google_id: profile.id });
+          if (!user) {
+            user = await User.create({
+              google_id: profile.id,
+              email: profile.emails[0].value,
+              valid_email: true,
+            });
+            await generateAccessAndRefereshTokens(user._id);
           }
+          done(null, user);
         } catch (err) {
           console.error(err);
+          done(err, null);
         }
       }
     )
   );
 
-  // used to serialize the user for the session
+  // Used to serialize the user for the session
   passport.serializeUser((user, done) => {
     done(null, user.id);
   });
 
-  // used to deserialize the user
+  // Used to deserialize the user
   passport.deserializeUser(async (id, done) => {
-    const user = await Google.findById(id);
+    const user = await User.findById(id);
     done(null, user);
   });
 });
@@ -210,38 +199,44 @@ const facebookPassport = asyncHandler(async (passport) => {
         clientID: process.env.FACEBOOK_CLIENT_ID,
         clientSecret: process.env.FACEBOOK_SECRET_KEY,
         callbackURL: "http://localhost:5050/api/v1/facebook/callback",
-        scope: ["profile", "email"],
+        scope: ["email"],
+        profileFields: ["id", "displayName", "emails"],
       },
       async function (accessToken, refreshToken, profile, cb) {
-        console.log(profile);
-        const user = await Facebook.findOne({
-          accountId: profile.id,
-          provider: "facebook",
-        });
-        if (!user) {
-          console.log("Adding new facebook user to DB..");
-          const newUser = new Facebook({
-            accountId: profile.id,
-            name: profile.displayName,
-            provider: profile.provider,
-          });
-          await newUser.save();
-          return cb(null, profile);
-        } else {
-          console.log("Facebook User already exists in DB..");
-          return cb(null, profile);
+        try {
+          console.log(profile);
+          const user = await User.findOne({ facebook_id: profile.id});
+          if (!user) {
+            console.log("Adding new Facebook user to DB..");
+            const newUser = new User({
+              facebook_id: profile.id,
+              email: profile.emails ? profile.emails[0].value : null,
+              valid_email: true,
+            });
+            await newUser.save();
+            return cb(null, newUser);
+          } else {
+            console.log("Facebook User already exists in DB..");
+            return cb(null, user);
+          }
+        } catch (err) {
+          console.error(err);
+          return cb(err, null);
         }
       }
     )
   );
+
   passport.serializeUser(function (user, cb) {
-    cb(null, user);
+    cb(null, user.id);
   });
+
   passport.deserializeUser(async function (id, cb) {
-    const user = await Facebook.findById(id);
+    const user = await User.findById(id);
     cb(null, user);
   });
 });
+
 
 const verifyEmail = asyncHandler(async (req, res) => {
   try {

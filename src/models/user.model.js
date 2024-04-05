@@ -18,7 +18,6 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
     },
     phone: {
       type: String,
@@ -41,6 +40,14 @@ const userSchema = new Schema(
     valid_phone: {
       type: Boolean,
       default: false,
+    },
+    google_id: {
+      type: String,
+      default: null,
+    },
+    facebook_id: {
+      type: String,
+      default: null,
     },
     securityToken: {
       type: String,
