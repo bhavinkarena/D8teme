@@ -159,14 +159,24 @@ const googlePassport = asyncHandler(async (passport) => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          // Save the Google ID and email in the database
           let user = await User.findOne({ google_id: profile.id });
+
           if (!user) {
-            user = await User.create({
-              google_id: profile.id,
-              email: profile.emails[0].value,
-              valid_email: true,
-            });
+            // Check if the user exists by email
+            user = await User.findOne({ email: profile.emails[0].value });
+
+            if (user) {
+              // If user exists, add the Google ID to the existing user document
+              user.google_id = profile.id;
+              await user.save();
+            } else {
+              // If user does not exist, create a new user
+              user = await User.create({
+                google_id: profile.id,
+                email: profile.emails[0].value,
+                valid_email: true,
+              });
+            }
             await generateAccessAndRefereshTokens(user._id);
           }
           done(null, user);
@@ -189,6 +199,7 @@ const googlePassport = asyncHandler(async (passport) => {
     done(null, user);
   });
 });
+
 
 const facebookPassport = asyncHandler(async (passport) => {
   passport.use(
