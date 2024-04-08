@@ -238,6 +238,7 @@ const facebookPassport = asyncHandler(async (passport) => {
 const verifyEmail = asyncHandler(async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
+    console.log(user);
     if (!user) {
       throw new ApiError(404, "User does not exist");
     }
@@ -246,7 +247,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
     // Save the OTP in the database
     user.otp = otp;
     await user.save();
-
+    console.log("OTP: ", otp);
     // Send the OTP email
     sendEmail(user.email, otp);
 
