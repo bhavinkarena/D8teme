@@ -19,31 +19,17 @@ app.use(cookieParser())
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-const origins = [
-    "http://192.168.50.245",
-    "http://192.168.50.245:8000",
-    "http://127.0.0.1",
-    "http://localhost",
-    "https://d8teme.onrender.com",
-    "http://localhost:3000"
-];
-
 app.use(cors({
-    origin: function(origin, callback){
-        // allow requests with no origin 
-        // (like mobile apps or curl requests)
-        if(!origin) return callback(null, true);
-        if(origins.indexOf(origin) === -1){
-          var msg = 'The CORS policy for this site does not ' +
-                    'allow access from the specified Origin.';
-          return callback(new Error(msg), false);
-        }
-        return callback(null, true);
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
+    origin: "http://localhost:3000",
+    credentials: true
+  }));
+  app.use((req, res, next) => {
+    // Set CORS headers
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Allow requests from any origin
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Allow specified HTTP methods
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow specified headers
+    next();
+  });
 
 app.use(
     session({
