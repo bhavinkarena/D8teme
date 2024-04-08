@@ -154,7 +154,7 @@ const googlePassport = asyncHandler(async (passport) => {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://localhost:5050/api/v1/google/callback",
+        callbackURL: "https://d8teme-752t.onrender.com/api/v1/google/callback",
         scope: ["profile", "email"],
       },
       async (accessToken, refreshToken, profile, done) => {

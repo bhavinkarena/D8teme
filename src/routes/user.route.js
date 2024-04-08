@@ -33,7 +33,7 @@ userRouter.get(
   passport.authenticate("google", { failureRedirect: "/user/login" }),
   function (req, res) {
     // Successful authentication, redirect home.
-    res.redirect("/");
+    res.redirect("https://d8teme-752t.onrender.com");
   }
 );
 
