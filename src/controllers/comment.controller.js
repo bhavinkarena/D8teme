@@ -59,7 +59,6 @@ const createReply = async (req, res) => {
       console.error("Error creating reply comment:", error);
       throw new ApiError(500, error, "Internal Server Error");
     }
-  };
+};
   
-
 export { createComment, createReply };

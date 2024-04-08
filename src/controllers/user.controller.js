@@ -302,7 +302,6 @@ const verifyPhoneNumber = asyncHandler(async (req, res) => {
   // Save the OTP in the database
   user.phone = phone;
   user.otp = otp;
-  user.otpExpiration = Date.now() + 5 * 60 * 1000; // OTP expires in 5 minutes
   await user.save();
 
   await sendSMS(phone, otp);
