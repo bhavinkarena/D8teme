@@ -26,9 +26,6 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
-    otpExpiration: {
-      type: Date,
-    },
     is_active: {
       type: Boolean,
       default: false,

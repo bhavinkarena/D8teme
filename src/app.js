@@ -68,5 +68,11 @@ app.use("/api/v3",hashRouter)
 //request route import
 import requestRouter from "./routes/usermatch.route.js"
 app.use("/api/v4",requestRouter)
+//post route import
+import postRouter from "./routes/post.route.js"
+app.use("/api/v5",postRouter)
+//comment route import
+import commentRouter from "./routes/comment.route.js"
+app.use("/api/v6",commentRouter)
 
 export { app };

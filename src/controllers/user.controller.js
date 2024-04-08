@@ -245,7 +245,6 @@ const verifyEmail = asyncHandler(async (req, res) => {
 
     // Save the OTP in the database
     user.otp = otp;
-    user.otpExpiration = Date.now() + 5 * 60 * 1000; // OTP expires in 5 minutes
     await user.save();
 
     // Send the OTP email
@@ -271,11 +270,9 @@ const isValidate = asyncHandler(async (req, res) => {
   if (!usercheck) {
     throw new ApiError(404, "User not found");
   }
-
   if (parseInt(otp) === parseInt(usercheck.otp)) {
     // Clear the OTP in the database
-    usercheck.otp = undefined;
-    usercheck.otpExpiration = undefined;
+    usercheck.otp = null;
     usercheck.valid_email = true;
     await usercheck.save();
 
