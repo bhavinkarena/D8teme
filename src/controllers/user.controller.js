@@ -40,9 +40,14 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Passwords do not match");
   }
 
-  const existedEmp = await User.findOne({ email });
+  const existedUser = await User.findOne({ email });
+  
+  if (existedUser) {
+    
+    if (existedUser.google_id) {
+      throw new ApiError(400, "User has registered with Google. Please log in with Google instead.");
+    }
 
-  if (existedEmp) {
     throw new ApiError(
       409,
       "Employee with email or phone number already exists"
@@ -95,6 +100,10 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) {
     throw new ApiError(404, "User does not exist");
+  }
+
+  if (user.google_id) {
+    throw new ApiError(400, "User has registered with Google. Please log in with Google instead.");
   }
 
   const isPasswordValid = await user.isPasswordCorrect(password);
@@ -199,7 +208,6 @@ const googlePassport = asyncHandler(async (passport) => {
     done(null, user);
   });
 });
-
 
 const facebookPassport = asyncHandler(async (passport) => {
   passport.use(
