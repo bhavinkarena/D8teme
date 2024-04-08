@@ -43,7 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const existedUser = await User.findOne({ email });
   
   if (existedUser) {
-    
+
     if (existedUser.google_id) {
       throw new ApiError(400, "User has registered with Google. Please log in with Google instead.");
     }
@@ -100,10 +100,6 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) {
     throw new ApiError(404, "User does not exist");
-  }
-
-  if (user.google_id) {
-    throw new ApiError(400, "User has registered with Google. Please log in with Google instead.");
   }
 
   const isPasswordValid = await user.isPasswordCorrect(password);
