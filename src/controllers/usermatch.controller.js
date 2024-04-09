@@ -7,36 +7,31 @@ import mongoose from "mongoose";
 
 const sendRequest = asyncHandler(async (req, res) => {
   const { recipientId } = req.body;
-  console.log(req.user._id);
   const senderId = await UserProfile.find({ userID: req.user._id });
-  console.log(senderId[0]._id);
   try {
     const sender = await UserProfile.findById(senderId[0]._id);
-    const recipient = await UserProfile.findById(recipientId);
-
-    if (!sender || !recipient || senderId[0]._id.toString() === recipientId) {
+    const recipient = await UserProfile.find({ userID: recipientId });
+    if (!sender || !recipient || senderId[0]._id.toString() === recipientId.toString()) {
+      console.log("if");
       throw new ApiError(400, "User not found");
     }
-
     //check if user is alreddy friend or not
     if (sender.friends.includes(recipientId)) {
       return res.json(new ApiResponse(200, null, "User is already a friend"));
     }
-
     // Check if a request has already been sent
     const existingRequest = await userMatch.findOne({
       senderId: new mongoose.Types.ObjectId(senderId[0]._id),
-      recipientId: new mongoose.Types.ObjectId(recipientId),
+      recipientId: new mongoose.Types.ObjectId(recipient[0]._id),
     });
     if (existingRequest) {
       return res.json(
         new ApiResponse(200, null, "Friend request already sent")
       );
     }
-
     const newMatch = await userMatch.create({
       senderId: new mongoose.Types.ObjectId(senderId[0]._id),
-      recipientId: new mongoose.Types.ObjectId(recipientId),
+      recipientId: new mongoose.Types.ObjectId(recipient[0]._id),
       isAccepted: "Pending",
     });
     const matchUser = await userMatch.findById(newMatch._id).select();
