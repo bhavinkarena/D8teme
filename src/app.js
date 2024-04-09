@@ -18,13 +18,9 @@ app.use(cors({
 
   app.use((req, res, next) => {
     // Set CORS headers
-    console.log("req.headers start");
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Allow requests from any origin
-    console.log("req.headers 2");
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Allow specified HTTP methods
-    console.log("req.headers 3");
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow specified headers
-    console.log("req.headers 4");
     next();
   });
 
