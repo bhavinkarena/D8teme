@@ -10,26 +10,6 @@ import {
 
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("D8teme");
-});
-
-app.use(cors({
-  origin: ["http://localhost:3000", "https://d8teme-752t.onrender.com/", "https://d8teme-752t.onrender.com/api/v1/google"],
-  credentials: true,
-  allowedHeaders: ["Content-Type", "Authorization"],
-  methods: ["GET", "POST", "PUT", "DELETE"]
-}));
-
-
-app.use((req, res, next) => {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000, https://d8teme-752t.onrender.com/, https://d8teme-752t.onrender.com/api/v1/google'); // Allow requests from any origin
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Allow specified HTTP methods
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow specified headers
-  next();
-});
-
 app.use(
   session({
     secret: "bhavinkarena",
@@ -43,11 +23,22 @@ app.use(cookieParser());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+app.get("/", (req, res) => {
+  res.send("D8teme");
+});
+
 googlePassport(passport);
 facebookPassport(passport);
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(cors({
+  origin: ["http://localhost:3000", "https://d8teme-752t.onrender.com/", "https://d8teme-752t.onrender.com/api/v1/google"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PUT", "DELETE"]
+}));
 
 //user routes import
 import UserRouter from "./routes/user.route.js";
