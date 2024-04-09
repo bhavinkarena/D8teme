@@ -2,6 +2,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import {Post} from "../models/post.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+
 const uploadPost = async (req, res) => {
     try {
       const { userId } = req.user;
@@ -33,7 +34,7 @@ const uploadPost = async (req, res) => {
       console.error("Error uploading post:", error);
       throw new ApiError(500, error, "Internal Server Error");
     }
-  };
+};
   
-  export { uploadPost };
+export { uploadPost };
   
