@@ -181,11 +181,14 @@ const googlePassport = asyncHandler(async (passport) => {
                 valid_email: true,
               });
             }
-            await generateAccessAndRefereshTokens(user._id);
           }
-          console.log(user);
-          console.log(user.accessToken);
-          done(null, user);
+
+          // Generate the access token
+          const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
+          console.log(accessToken);
+
+          // Return the user and access token
+          done(null, { user, accessToken });
         } catch (err) {
           console.error(err);
           done(err, null);
@@ -205,6 +208,7 @@ const googlePassport = asyncHandler(async (passport) => {
     done(null, user);
   });
 });
+
 
 const facebookPassport = asyncHandler(async (passport) => {
   passport.use(
