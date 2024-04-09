@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 });
 
 app.use(cors({
-  origin: ["http://localhost:3000", "https://d8teme-752t.onrender.com/"],
+  origin: ["http://localhost:3000", "https://d8teme-752t.onrender.com/", "https://d8teme-752t.onrender.com/api/v1/google"],
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
   methods: ["GET", "POST", "PUT", "DELETE"]
@@ -24,7 +24,7 @@ app.use(cors({
 
 app.use((req, res, next) => {
   // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000, https://d8teme-752t.onrender.com/'); // Allow requests from any origin
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000, https://d8teme-752t.onrender.com/, https://d8teme-752t.onrender.com/api/v1/google'); // Allow requests from any origin
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Allow specified HTTP methods
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow specified headers
   next();
