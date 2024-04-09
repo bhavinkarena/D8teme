@@ -184,12 +184,11 @@ const googlePassport = asyncHandler(async (passport) => {
               });
             }
           }
-          const { accessToken, refreshToken } =
-            await generateAccessAndRefereshTokens(user._id);
+          const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
 
           console.log(user);
           console.log(accessToken);
-          done(null, { user, accessToken });
+          done(null, user);
         } catch (err) {
           console.error(err);
           done(err, null);
