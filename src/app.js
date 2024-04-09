@@ -12,17 +12,20 @@ app.get("/",(req,res)=>{
 })
 
 app.use(cors({
-    origin: "http://localhost:3000",
-    credentials: true
-  }));
+  origin: "http://localhost:3000",
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PUT", "DELETE"]
+}));
 
-  app.use((req, res, next) => {
-    // Set CORS headers
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Allow requests from any origin
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Allow specified HTTP methods
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow specified headers
-    next();
-  });
+
+  // app.use((req, res, next) => {
+  //   // Set CORS headers
+  //   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Allow requests from any origin
+  //   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Allow specified HTTP methods
+  //   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow specified headers
+  //   next();
+  // });
 
 app.use(
     session({
