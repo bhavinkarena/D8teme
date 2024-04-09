@@ -17,6 +17,7 @@ const sendRequest = asyncHandler(async (req, res) => {
     }
     //check if user is alreddy friend or not
     if (sender.friends.includes(recipientId)) {
+      console.log("object");
       return res.json(new ApiResponse(200, null, "User is already a friend"));
     }
     // Check if a request has already been sent
