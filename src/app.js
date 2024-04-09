@@ -11,14 +11,6 @@ app.get("/",(req,res)=>{
     res.send("D8teme")
 })
 
-googlePassport(passport);
-facebookPassport(passport);
-
-app.use(express.static("public"))   
-app.use(cookieParser())
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
-
 app.use(cors({
     origin: ["http://localhost:3000","*"],
     credentials: true
@@ -38,6 +30,14 @@ app.use(
       saveUninitialized: false,
     })
 );
+
+app.use(express.static("public"))   
+app.use(cookieParser())
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+googlePassport(passport);
+facebookPassport(passport);
 
 app.use(passport.initialize());
 app.use(passport.session());
