@@ -41,11 +41,13 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const existedUser = await User.findOne({ email });
-  
-  if (existedUser) {
 
+  if (existedUser) {
     if (existedUser.google_id) {
-      throw new ApiError(400, "User has registered with Google. Please log in with Google instead.");
+      throw new ApiError(
+        400,
+        "User has registered with Google. Please log in with Google instead."
+      );
     }
 
     throw new ApiError(
@@ -182,12 +184,11 @@ const googlePassport = asyncHandler(async (passport) => {
               });
             }
           }
+          const { accessToken, refreshToken } =
+            await generateAccessAndRefereshTokens(user._id);
 
-          // Generate the access token
-          const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
+          console.log(user);
           console.log(accessToken);
-
-          // Return the user and access token
           done(null, { user, accessToken });
         } catch (err) {
           console.error(err);
@@ -209,7 +210,6 @@ const googlePassport = asyncHandler(async (passport) => {
   });
 });
 
-
 const facebookPassport = asyncHandler(async (passport) => {
   passport.use(
     new FacebookStrategy(
@@ -223,7 +223,7 @@ const facebookPassport = asyncHandler(async (passport) => {
       async function (accessToken, refreshToken, profile, cb) {
         try {
           console.log(profile);
-          const user = await User.findOne({ facebook_id: profile.id});
+          const user = await User.findOne({ facebook_id: profile.id });
           if (!user) {
             console.log("Adding new Facebook user to DB..");
             const newUser = new User({
