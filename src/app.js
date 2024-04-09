@@ -8,7 +8,6 @@ import { facebookPassport, googlePassport } from "./controllers/user.controller.
 const app = express();
 
 app.get("/",(req,res)=>{
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
     res.send("D8teme")
 })
 
@@ -16,7 +15,7 @@ app.use(cors({
   origin: "http://localhost:3000",
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
-
+  preflightContinue: false,
   methods: ["GET", "POST", "PUT", "DELETE"]
 }));
 
