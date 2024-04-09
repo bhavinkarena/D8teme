@@ -155,6 +155,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const googlePassport = asyncHandler(async (passport) => {
+  console.log("google passport");
   passport.use(
     new GoogleStrategy(
       {
@@ -185,7 +186,7 @@ const googlePassport = asyncHandler(async (passport) => {
             }
           }
           const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
-
+          console.log('middle')
           console.log(user);
           console.log(accessToken);
           done(null, user);
