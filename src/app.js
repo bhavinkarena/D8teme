@@ -14,15 +14,13 @@ app.get("/", (req, res) => {
   res.send("D8teme");
 });
 
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-    preflightContinue: false,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  })
-);
+app.use(cors({
+  origin: ["http://localhost:3000", "https://d8teme-752t.onrender.com"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PUT", "DELETE"]
+}));
+
 
 // app.use((req, res, next) => {
 //   // Set CORS headers
