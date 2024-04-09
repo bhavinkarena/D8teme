@@ -57,7 +57,6 @@ const userprofileSchema = new Schema(
     },
     looking_for: {
       type: String,
-      enum: ["Men", "Women", "Other"],
       require: true,
     },
     profileImage: [

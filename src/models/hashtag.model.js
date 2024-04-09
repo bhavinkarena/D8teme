@@ -5,6 +5,10 @@ const hashtagSchema = new Schema(
     hashtag: {
       type: String,
     },
+    type: {
+      type: String,
+      enum: ["passion", "post"],
+    }
   },
   {
     timestamps: true,
