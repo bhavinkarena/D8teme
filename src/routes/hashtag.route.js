@@ -6,5 +6,6 @@ const hashRouter = Router();
 hashRouter.route("/hashtag/addhash").post(addHashtag);
 hashRouter.route("/hashtag/passion").get(getAllPassionHashtag);
 hashRouter.route("/hashtag/post").get(getAllPostHashtag);
+// hashRouter.route("/hashtag/add").get(addDefaultHashtags);
 
 export default hashRouter;
