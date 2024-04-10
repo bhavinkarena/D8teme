@@ -34,11 +34,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(cors({
-  origin: ["http://localhost:3000", "https://d8teme-752t.onrender.com/","https://d8tome.vercel.app/","https://d8tome.vercel.app","*"],
+  origin: ["http://localhost:3000", "https://d8teme-752t.onrender.com", "https://d8tome.vercel.app"],
   credentials: true,
-  allowedHeaders: ["Content-Type", "Authorization","*"],
-  preflightContinue: false,
-  methods: ["GET", "POST", "PUT", "DELETE","*"]
+  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PUT", "DELETE"]
 }));
 
 //user routes import
