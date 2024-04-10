@@ -34,6 +34,7 @@ const createUser = asyncHandler(async (req, res) => {
       let profileImageUrls = [];
       if (req.files) {
         const files = req.files;
+        console.log(files);
         for (const file of files) {
           const coverImageLocalPath = file.path;
           const profileimage = await uploadOnCloudinary(coverImageLocalPath);
