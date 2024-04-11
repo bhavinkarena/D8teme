@@ -37,11 +37,11 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://d8teme-752t.onrender.com",
+      "https://d8teme-aod4.onrender.com",
       "https://d8tome.vercel.app",
-      "https://d8teme-752t.onrender.com/api/v1/google",
-      "https://d8teme-752t.onrender.com/api/v1/google/callback",
-      "https://d8teme-752t.onrender.com/",
+      "https://d8teme-aod4.onrender.com/api/v1/google",
+      "https://d8teme-aod4.onrender.com/api/v1/google/callback",
+      "https://d8teme-aod4.onrender.com/",
     ],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
