@@ -32,28 +32,30 @@ const registerUser = asyncHandler(async (req, res) => {
   if (
     [email, password, confirmPassword].some((field) => field?.trim() === "")
   ) {
-    throw new ApiError(400, "All fields are required");
+    return res.status(400).json(new ApiError(400, null, "All fields are required"));
   }
   console.log("object");
   // Check if password and confirm pass word match
   if (password !== confirmPassword) {
-    throw new ApiError(400, "Passwords do not match");
+    return res.status(400).json(new ApiError(400, null, "Passwords do not match"));
   }
 
   const existedUser = await User.findOne({ email });
 
   if (existedUser) {
     if (existedUser.google_id) {
-      throw new ApiError(
+      return res.status(400).json(new ApiError(
         400,
+        null,
         "User has registered with Google. Please log in with Google instead."
-      );
+      ));
     }
 
-    throw new ApiError(
+    return res.status(409).json(new ApiError(
       409,
+      null,
       "Employee with email or phone number already exists"
-    );
+    ));
   }
 
   const user = await User.create({
@@ -66,10 +68,11 @@ const registerUser = asyncHandler(async (req, res) => {
   );
 
   if (!createdUser) {
-    throw new ApiError(
+    return res.status(500).json(new ApiError(
       500,
+      null,
       "Something went wrong while registering the Employee"
-    );
+    ));
   }
 
   const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
@@ -96,17 +99,17 @@ const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   console.log(email);
   if (!email || !password) {
-    throw new ApiError(400, "Email and password are required");
+    return res.status(400).json(new ApiResponse(400, null, "Email and password are required"));
   }
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw new ApiError(404, "User does not exist");
+    return res.status(400).json(new ApiResponse(400, null, "User does not exist"));
   }
 
   const isPasswordValid = await user.isPasswordCorrect(password);
   if (!isPasswordValid) {
-    throw new ApiError(401, "Invalid credentials");
+    return res.status(400).json(new ApiResponse(400, null, "Password is incorrect"));
   }
 
   const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
@@ -114,23 +117,22 @@ const loginUser = asyncHandler(async (req, res) => {
   );
 
   const loggedInUser = await User.findById(user._id).select("-password");
-  return res.json(
-    new ApiResponse(
-      200,
-      {
-        user: loggedInUser,
-        accessToken,
-      },
-      "User logged in successfully"
-    )
+  const successResponse = new ApiResponse(
+    200,
+    {
+      user: loggedInUser,
+      accessToken,
+    },
+    "User logged in successfully"
   );
+  return res.json(successResponse);
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
   if (!req.user) {
     return res
       .status(401)
-      .json(new ApiResponse(401, {}, "User not authenticated"));
+      .json(new ApiResponse(401, null, "User not authenticated"));
   }
   await User.findByIdAndUpdate(
     req.user._id,
@@ -258,7 +260,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
     console.log(user);
     if (!user) {
-      throw new ApiError(404, "User does not exist");
+      return res.status(400).json(new ApiError(400 ,null, "User does not exist"));
     }
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -272,7 +274,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
     return res.json({ message: "OTP sent successfully" });
   } catch (error) {
     console.error("Error validating email:", error);
-    throw new ApiError(500, "Internal server error");
+    return res.status(400).json(new ApiError(500, null, "Internal server error"));
   }
 });
 
@@ -281,13 +283,13 @@ const isValidate = asyncHandler(async (req, res) => {
   const user = req.user;
 
   if (!user) {
-    throw new ApiError(401, "User not authenticated");
+     return res.status(400).json(new ApiError(400, null, "User not authenticated"));
   }
 
   const usercheck = await User.findOne({ _id: user._id });
 
   if (!usercheck) {
-    throw new ApiError(404, "User not found");
+     return res.status(400).json(new ApiError(400, null, "User not found"));
   }
   if (parseInt(otp) === parseInt(usercheck.otp)) {
     // Clear the OTP in the database
@@ -305,7 +307,7 @@ const isValidate = asyncHandler(async (req, res) => {
       )
     );
   } else {
-    throw new ApiError(400, "Invalid OTP");
+    return res.status(400).json(new ApiError(400, null, "Invalid OTP"));
   }
 });
 
@@ -313,7 +315,7 @@ const verifyPhoneNumber = asyncHandler(async (req, res) => {
   const { phone } = req.body;
   const user = await User.findById(req.user._id);
   if (!user) {
-    throw new ApiError(404, "User does not exist");
+    return res.status(400).json(new ApiError(400, null, "User does not exist"));
   }
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -353,7 +355,7 @@ const isPhoneNumberValid = asyncHandler(async (req, res) => {
     );
   }
 
-  throw new ApiError(400, "Invalid Phone Number OTP");
+  return res.status(400).json(new ApiError(400, null, "Invalid Phone Number OTP"));
 });
 
 export {

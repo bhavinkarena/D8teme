@@ -13,7 +13,7 @@ const sendSMS = async (phoneNumber, otp) => {
     console.log(`SMS sent to ${phoneNumber} with OTP: ${otp}`);
   } catch (error) {
     console.error('Error sending SMS via Twilio:', error);
-    throw new ApiError(500, 'Error sending SMS');
+    return res.status(500).json(new ApiError(500, null, 'Error sending SMS'));
   }
 };
 export default sendSMS;

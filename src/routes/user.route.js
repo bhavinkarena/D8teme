@@ -13,7 +13,7 @@ import {
 import passport from "passport";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
-const userRouter = Router();
+const   userRouter = Router();
 
 userRouter.route("/user/register").post(registerUser);
 userRouter.route("/user/login").post(loginUser);

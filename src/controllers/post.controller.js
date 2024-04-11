@@ -13,7 +13,7 @@ const uploadPost = async (req, res) => {
       const cloudinaryResponse = await uploadOnCloudinary(path);
   
       if (!cloudinaryResponse) {
-        throw new ApiError(500, "Something went wrong while uploading the file");
+        return res.status(500).json(new ApiError(500, null, "Something went wrong while uploading the file"));
       }
   
       // Create a new post object
@@ -32,7 +32,7 @@ const uploadPost = async (req, res) => {
       );
     } catch (error) {
       console.error("Error uploading post:", error);
-      throw new ApiError(500, error, "Internal Server Error");
+      return res.status(500).json(new ApiError(500, error, "Internal Server Error"));
     }
 };
   

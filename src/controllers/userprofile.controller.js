@@ -25,10 +25,11 @@ const createUser = asyncHandler(async (req, res) => {
       });
 
       if (existedUser) {
-        throw new ApiError(
+        return res.status(409).json(new ApiError(
           409,
+          null,
           "Employee with email or phone number already exists"
-        );
+        ));
       }
 
       let profileImageUrls = [];
@@ -58,10 +59,11 @@ const createUser = asyncHandler(async (req, res) => {
       const createdUser = await UserProfile.findById(userprofile._id).select();
 
       if (!createdUser) {
-        throw new ApiError(
+        return res.status(500).json(new ApiError(
           500,
+          null,
           "Something went wrong while registering the Employee"
-        );
+        ));
       }
 
       return res
@@ -70,10 +72,10 @@ const createUser = asyncHandler(async (req, res) => {
           new ApiResponse(200, createdUser, "Employee registered Successfully")
         );
     } else {
-      throw new ApiError(401, "Please verify your Email by OTP");
+      return res.status(401).json(new ApiError(401, null, "Please verify your Email by OTP"));
     }
   } catch (error) {
-    throw new ApiError(400, error);
+    return res.status(400).json(new ApiError(400, error));
   }
 });
 
@@ -108,7 +110,6 @@ const updateUserDetails = asyncHandler(async (req, res) => {
   ).select();
   console.log(user);
   return res
-    .status(200)
     .json(new ApiResponse(200, user, "Account details updated successfully"));
 });
 
@@ -119,13 +120,13 @@ const getCurrentUser = asyncHandler(async (req, res) => {
       "firstname lastname email profileImage DOB gender show_me looking_for Passions Sexuality"
     );
     if (!currentUser) {
-      throw new ApiError(400, "User not Found");
+      return res.status(404).json(new ApiError(404, null, "User not Found"));
     }
     return res
       .status(200)
       .json(new ApiResponse(200, currentUser, "Employee fetched successfully"));
   } else {
-    throw new ApiError(401, "Please verify your Email by OTP");
+    return res.status(401).json(new ApiError(401, null, "Please verify your Email by OTP"));
   }
 });
 

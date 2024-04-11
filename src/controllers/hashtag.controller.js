@@ -8,12 +8,12 @@ const addHashtag = asyncHandler(async (req, res) => {
 
   const existedHash = await Hashtag.findOne({ hashtag, type });
   if (existedHash) {
-    throw new ApiError(409, "This hashtag already exists");
+    return res.status(409).json(new ApiError(409, null, "This hashtag already exists"));
   }
 
   const newHashtag = await Hashtag.create({ hashtag, type });
   if (!newHashtag) {
-    throw new ApiError(500, "Something went wrong while adding the hashtag");
+    return res.status(500).json(new ApiError(500, null, "Something went wrong while adding the hashtag"));
   }
 
   return res

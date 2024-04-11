@@ -24,7 +24,7 @@ const createComment = async (req, res) => {
     );
   } catch (error) {
     console.error("Error creating comment:", error);
-    throw new ApiError(500, error, "Internal Server Error");
+    return res.status(500).json(new ApiError(500, error, "Internal Server Error"));
   }
 };
 
@@ -37,7 +37,7 @@ const createReply = async (req, res) => {
       // Find the parent comment
       const parentComment = await Comment.findById(commentId);
       if (!parentComment) {
-       throw new ApiError(404, "Parent comment not found");
+        return res.status(400).json(new ApiError(400, "Parent comment not found"));
       }
   
       // Create a new comment object for the reply
@@ -57,7 +57,7 @@ const createReply = async (req, res) => {
       );
     } catch (error) {
       console.error("Error creating reply comment:", error);
-      throw new ApiError(500, error, "Internal Server Error");
+      return res.status(500).json(new ApiError(500, error, "Internal Server Error"));
     }
 };
   

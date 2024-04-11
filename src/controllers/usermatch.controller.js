@@ -11,9 +11,13 @@ const sendRequest = asyncHandler(async (req, res) => {
   try {
     const sender = await UserProfile.findById(senderId[0]._id);
     const recipient = await UserProfile.find({ userID: recipientId });
-    if (!sender || !recipient || senderId[0]._id.toString() === recipientId.toString()) {
+    if (
+      !sender ||
+      !recipient ||
+      senderId[0]._id.toString() === recipientId.toString()
+    ) {
       console.log("if");
-      throw new ApiError(400, "User not found");
+      return res.status(400).json(new ApiError(400, null, "User not found"));
     }
     //check if user is alreddy friend or not
     if (sender.friends.includes(recipientId)) {
@@ -41,7 +45,9 @@ const sendRequest = asyncHandler(async (req, res) => {
     );
   } catch (err) {
     console.error(err);
-    throw new ApiError(401, "Internal server error");
+    return res
+      .status(400)
+      .json(new ApiError(400, null, "Internal server error"));
   }
 });
 
@@ -52,7 +58,9 @@ const acceptRequest = asyncHandler(async (req, res) => {
     // Find the friend request by ID
     const friendRequest = await userMatch.findById(requestId);
     if (!friendRequest) {
-      throw new ApiError(404, "Friend request not found");
+      return res
+        .status(400)
+        .json(new ApiError(400, null, "Friend request not found"));
     }
     console.log(friendRequest.recipientId.toString());
     console.log(recipientId[0]._id.toString());
@@ -60,7 +68,15 @@ const acceptRequest = asyncHandler(async (req, res) => {
     if (
       friendRequest.recipientId.toString() !== recipientId[0]._id.toString()
     ) {
-      throw new ApiError(403, "You are not authorized to accept this request");
+      return res
+        .status(403)
+        .json(
+          new ApiError(
+            403,
+            null,
+            "You are not authorized to accept this request"
+          )
+        );
     }
 
     // Update the friend request status to accepted
@@ -71,7 +87,7 @@ const acceptRequest = asyncHandler(async (req, res) => {
     const sender = await UserProfile.findById(friendRequest.senderId);
     const recipient = await UserProfile.findById(friendRequest.recipientId);
     if (!sender || !recipient) {
-      throw new ApiError(400, "User not found");
+      return res.status(400).json(new ApiError(400, null, "User not found"));
     }
     sender.friends.push(recipientId[0]._id.toString());
     recipient.friends.push(sender._id.toString());
@@ -83,7 +99,9 @@ const acceptRequest = asyncHandler(async (req, res) => {
     );
   } catch (err) {
     console.error(err);
-    throw new ApiError(500, "Internal server error");
+    return res
+      .status(400)
+      .json(new ApiError(500, null, "Internal server error"));
   }
 });
 
@@ -94,7 +112,9 @@ const rejectRequest = asyncHandler(async (req, res) => {
     // Find the friend request by ID
     const friendRequest = await userMatch.findById(requestId);
     if (!friendRequest) {
-      throw new ApiError(404, "Friend request not found");
+      return res
+        .status(400)
+        .json(new ApiError(400, null, "Friend request not found"));
     }
     console.log(friendRequest.recipientId.toString());
     console.log(recipientId[0]._id.toString());
@@ -102,14 +122,24 @@ const rejectRequest = asyncHandler(async (req, res) => {
     if (
       friendRequest.recipientId.toString() !== recipientId[0]._id.toString()
     ) {
-      throw new ApiError(403, "You are not authorized to accept this request");
+      return res
+        .status(403)
+        .json(
+          new ApiError(
+            403,
+            null,
+            "You are not authorized to accept this request"
+          )
+        );
     }
 
     // delete friend request
     if ((friendRequest.isAccepted = "Pending")) {
       await userMatch.deleteOne({ _id: requestId });
     } else {
-      throw new ApiError(401, "friend request is alreddy accepted");
+      return res
+        .status(400)
+        .json(new ApiError(401, null, "friend request is alreddy accepted"));
     }
 
     res.json(
@@ -117,7 +147,9 @@ const rejectRequest = asyncHandler(async (req, res) => {
     );
   } catch (err) {
     console.error(err);
-    throw new ApiError(500, "Internal server error");
+    return res
+      .status(500)
+      .json(new ApiError(500, null, "Internal server error"));
   }
 });
 
@@ -126,7 +158,7 @@ const getFriendsList = asyncHandler(async (req, res) => {
     // Find the user by ID
     const user = await UserProfile.find({ userID: req.user._id });
     if (!user) {
-      throw new ApiError(404, "User not found");
+      return res.status(404).json(new ApiError(404, null, "User not found"));
     }
 
     // Find the user's friends
@@ -141,7 +173,9 @@ const getFriendsList = asyncHandler(async (req, res) => {
     );
   } catch (err) {
     console.error(err);
-    throw new ApiError(500, "Internal server error");
+    return res
+      .status(500)
+      .json(new ApiError(500, null, "Internal server error"));
   }
 });
 
@@ -169,7 +203,9 @@ const getPendingList = asyncHandler(async (req, res) => {
     );
   } catch (err) {
     console.error(err);
-    throw new ApiError(500, "Internal server error");
+    return res
+      .status(500)
+      .json(new ApiError(500, null, "Internal server error"));
   }
 });
 
@@ -181,7 +217,7 @@ const blockUser = asyncHandler(async (req, res) => {
     const userToUnfollow = await UserProfile.findById(blockId);
     const follower = await UserProfile.findById(userId[0]._id);
     if (!userToUnfollow || !follower) {
-      throw new ApiError(404, "User not found");
+      return res.status(404).json(new ApiError(404, null, "User not found"));
     }
     console.log(userId[0]._id.toString());
     console.log(userToUnfollow._id.toString());
@@ -198,7 +234,9 @@ const blockUser = asyncHandler(async (req, res) => {
     res.json(new ApiResponse(200, follower, "User unfollowed successfully"));
   } catch (err) {
     console.error(err);
-    throw new ApiError(500, "Internal server error");
+    return res
+      .status(500)
+      .json(new ApiError(500, null, "Internal server error"));
   }
 });
 
@@ -208,6 +246,5 @@ export {
   rejectRequest,
   getFriendsList,
   getPendingList,
-  blockUser
+  blockUser,
 };
-  
