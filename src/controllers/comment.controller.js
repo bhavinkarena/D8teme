@@ -37,7 +37,7 @@ const createReply = async (req, res) => {
       // Find the parent comment
       const parentComment = await Comment.findById(commentId);
       if (!parentComment) {
-        return res.status(400).json(new ApiError(400, "Parent comment not found"));
+        return res.status(404).json(new ApiError(404, "Parent comment not found"));
       }
   
       // Create a new comment object for the reply

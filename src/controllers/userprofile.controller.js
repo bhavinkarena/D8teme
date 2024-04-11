@@ -75,7 +75,7 @@ const createUser = asyncHandler(async (req, res) => {
       return res.status(401).json(new ApiError(401, null, "Please verify your Email by OTP"));
     }
   } catch (error) {
-    return res.status(400).json(new ApiError(400, error));
+    return res.status(500).json(new ApiError(500, error));
   }
 });
 
@@ -92,6 +92,11 @@ const updateUserDetails = asyncHandler(async (req, res) => {
   } = req.body;
   //    console.log(req.body);
   const userID = await UserProfile.find({ userID: req.user._id });
+
+  if (!userID) {
+    return res.status(404).json(new ApiError(404, null, "User not found"));
+  }
+  
   const user = await UserProfile.findByIdAndUpdate(
     userID[0]._id,
     {

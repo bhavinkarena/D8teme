@@ -17,7 +17,7 @@ const sendRequest = asyncHandler(async (req, res) => {
       senderId[0]._id.toString() === recipientId.toString()
     ) {
       console.log("if");
-      return res.status(400).json(new ApiError(400, null, "User not found"));
+      return res.status(404).json(new ApiError(404, null, "User not found"));
     }
     //check if user is alreddy friend or not
     if (sender.friends.includes(recipientId)) {
@@ -46,8 +46,8 @@ const sendRequest = asyncHandler(async (req, res) => {
   } catch (err) {
     console.error(err);
     return res
-      .status(400)
-      .json(new ApiError(400, null, "Internal server error"));
+      .status(500)
+      .json(new ApiError(500, null, "Internal server error"));
   }
 });
 
@@ -59,8 +59,8 @@ const acceptRequest = asyncHandler(async (req, res) => {
     const friendRequest = await userMatch.findById(requestId);
     if (!friendRequest) {
       return res
-        .status(400)
-        .json(new ApiError(400, null, "Friend request not found"));
+        .status(404)
+        .json(new ApiError(404, null, "Friend request not found"));
     }
     console.log(friendRequest.recipientId.toString());
     console.log(recipientId[0]._id.toString());
@@ -87,7 +87,7 @@ const acceptRequest = asyncHandler(async (req, res) => {
     const sender = await UserProfile.findById(friendRequest.senderId);
     const recipient = await UserProfile.findById(friendRequest.recipientId);
     if (!sender || !recipient) {
-      return res.status(400).json(new ApiError(400, null, "User not found"));
+      return res.status(404).json(new ApiError(404, null, "User not found"));
     }
     sender.friends.push(recipientId[0]._id.toString());
     recipient.friends.push(sender._id.toString());
@@ -100,7 +100,7 @@ const acceptRequest = asyncHandler(async (req, res) => {
   } catch (err) {
     console.error(err);
     return res
-      .status(400)
+      .status(500)
       .json(new ApiError(500, null, "Internal server error"));
   }
 });
@@ -113,8 +113,8 @@ const rejectRequest = asyncHandler(async (req, res) => {
     const friendRequest = await userMatch.findById(requestId);
     if (!friendRequest) {
       return res
-        .status(400)
-        .json(new ApiError(400, null, "Friend request not found"));
+        .status(404)
+        .json(new ApiError(404, null, "Friend request not found"));
     }
     console.log(friendRequest.recipientId.toString());
     console.log(recipientId[0]._id.toString());
@@ -138,8 +138,8 @@ const rejectRequest = asyncHandler(async (req, res) => {
       await userMatch.deleteOne({ _id: requestId });
     } else {
       return res
-        .status(400)
-        .json(new ApiError(401, null, "friend request is alreddy accepted"));
+        .status(409)
+        .json(new ApiError(409, null, "friend request is alreddy accepted"));
     }
 
     res.json(
