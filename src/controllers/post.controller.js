@@ -36,5 +36,20 @@ const uploadPost = async (req, res) => {
     }
 };
   
-export { uploadPost };
+const getAllPostsByHashtag = asyncHandler(async (req, res) => {
+  try {
+    const { hashtag } = req.body;
+
+    // Find all posts with the specified hashtag
+    const posts = await Post.find({ hashtags: hashtag });
+
+    // Return the posts
+    res.json(new ApiResponse(200, posts, "Posts Retrieved Successfully"));
+  } catch (error) {
+    console.error("Error retrieving posts by hashtag:", error);
+    return res.status(500).json(new ApiError(500, error, "Internal Server Error"));
+  }
+});
+
+export { uploadPost, getAllPostsByHashtag };
   
