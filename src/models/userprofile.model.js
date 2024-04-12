@@ -52,7 +52,7 @@ const userprofileSchema = new Schema(
     },
     show_me: {
       type: String,
-      enum: ["Men", "Women", "Other"],
+      enum: ["Men", "Women", "Everyone"],
       require: true,
     },
     looking_for: {
@@ -73,7 +73,8 @@ const userprofileSchema = new Schema(
     ],
     Sexuality: {
       type: String,
-      enum: ["Men", "Women", "Other"],
+      enum: ["Straight", "Gay", "Lesbian", "Bisexual", "Asexual","Demisexual","Pansexual","Queer","Bicurious","Aromantic"],
+      require: true,
     },
   },
   {

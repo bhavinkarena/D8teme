@@ -2,7 +2,6 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import {Post} from "../models/post.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { User } from "../models/user.model.js";
 import { UserProfile } from "../models/userprofile.model.js";
 
 const uploadPost = async (req, res) => {

@@ -75,7 +75,7 @@ const createUser = asyncHandler(async (req, res) => {
       return res.status(401).json(new ApiError(401, null, "Please verify your Email by OTP"));
     }
   } catch (error) {
-    return res.status(500).json(new ApiError(500, error));
+    return res.status(500).json(new ApiError(500, null, error));
   }
 });
 
