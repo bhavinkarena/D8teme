@@ -2,6 +2,8 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import {Post} from "../models/post.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { User } from "../models/user.model.js";
+import { UserProfile } from "../models/userprofile.model.js";
 
 const uploadPost = async (req, res) => {
     try {
@@ -51,5 +53,39 @@ const getAllPostsByHashtag = async (req, res) => {
   }
 };
 
-export { uploadPost, getAllPostsByHashtag };
+const likePost = async (req, res) => {
+  try {
+    const { postId } = req.params; // Assuming postId is passed as a URL parameter
+    const userId = req.user;
+    
+    const userprofile = await UserProfile.find({ userID: userId });
+
+    // Find the post by postId
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json(new ApiError(404, null, "Post not found"));
+    }
+
+    // Check if the user has already liked the post
+    if (post.likes.includes(userprofile[0]._id)) {
+      return res.status(400).json(new ApiError(400, null, "You have already liked this post"));
+    }
+    
+    // Add the user's id to the likes array
+    post.likes.push(userprofile[0]._id);;
+
+    // Save the updated post
+    await post.save();
+
+    // Return a success response
+    res.json(new ApiResponse(200, post, "Post liked successfully"));
+  } catch (error) {
+    console.error("Error liking post:", error);
+    return res.status(500).json(new ApiError(500, error, "Internal Server Error"));
+  }
+};
+
+
+export { uploadPost, getAllPostsByHashtag, likePost };
   

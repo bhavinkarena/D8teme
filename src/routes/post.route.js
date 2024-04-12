@@ -2,6 +2,7 @@ import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import {
   getAllPostsByHashtag,
+  likePost,
   uploadPost,
 } from "../controllers/post.controller.js";
 import {upload} from "../middlewares/multer.middleware.js"
@@ -15,5 +16,6 @@ postRouter.route("/post/createpost").post(verifyJWT ,upload.fields([
   ]),uploadPost);
 
 postRouter.route("/post/getallpost").post(verifyJWT,getAllPostsByHashtag);
+postRouter.route("/post/like").post(verifyJWT,likePost);
 
 export default postRouter;
