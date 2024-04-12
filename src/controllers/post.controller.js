@@ -5,21 +5,21 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 const uploadPost = async (req, res) => {
     try {
-      const { userId } = req.user;
+      const userId = req.user;
       const { hashtags } = req.body;
   
       // Upload the file on Cloudinary
-      let path = req.files.post[0].path;
-      const cloudinaryResponse = await uploadOnCloudinary(path);
+      let post = req.files.post[0].path;
+      const cloudinaryResponse = await uploadOnCloudinary(post);
   
       if (!cloudinaryResponse) {
         return res.status(500).json(new ApiError(500, null, "Something went wrong while uploading the file"));
       }
-  
+      console.log(userId);
       // Create a new post object
       const newPost = new Post({
-        userId,
-        hashtags,
+        userId: userId,
+        hashtags: hashtags,
         post: cloudinaryResponse.url, // save the Cloudinary URL of the uploaded file
       });
   
@@ -36,7 +36,7 @@ const uploadPost = async (req, res) => {
     }
 };
   
-const getAllPostsByHashtag = asyncHandler(async (req, res) => {
+const getAllPostsByHashtag = async (req, res) => {
   try {
     const { hashtag } = req.body;
 
@@ -49,7 +49,7 @@ const getAllPostsByHashtag = asyncHandler(async (req, res) => {
     console.error("Error retrieving posts by hashtag:", error);
     return res.status(500).json(new ApiError(500, error, "Internal Server Error"));
   }
-});
+};
 
 export { uploadPost, getAllPostsByHashtag };
   

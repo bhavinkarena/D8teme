@@ -14,6 +14,6 @@ postRouter.route("/post/createpost").post(verifyJWT ,upload.fields([
     },
   ]),uploadPost);
 
-postRouter.route("/post/getallpost").get(verifyJWT,getAllPostsByHashtag);
+postRouter.route("/post/getallpost").post(verifyJWT,getAllPostsByHashtag);
 
 export default postRouter;
