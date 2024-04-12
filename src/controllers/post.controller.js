@@ -69,7 +69,14 @@ const likePost = async (req, res) => {
 
     // Check if the user has already liked the post
     if (post.likes.includes(userprofile[0]._id)) {
-      return res.status(400).json(new ApiError(400, null, "You have already liked this post"));
+      // Remove the user's like
+      post.likes = post.likes.filter(id => id.toString() !== userprofile[0]._id.toString());
+
+      // Save the updated post
+      await post.save();
+
+      // Return a response indicating that the like has been removed
+      return res.json(new ApiResponse(200, post, "Like removed"));
     }
     
     // Add the user's id to the likes array
@@ -86,6 +93,44 @@ const likePost = async (req, res) => {
   }
 };
 
+const countLikes = async (req, res) => {
+  try {
+    const postId = req.params.postId;
 
-export { uploadPost, getAllPostsByHashtag, likePost };
+    // Find the post by ID
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json(new ApiError(404, null, "Post not found"));
+    }
+
+    // Return the number of likes
+    res.json(new ApiResponse(200, { likesCount: post.likes.length }, "Likes counted"));
+  } catch (error) {
+    console.error("Error counting likes:", error);
+    return res.status(500).json(new ApiError(500, error, "Internal Server Error"));
+  }
+};
+
+const countComment = async (req, res) => {
+  try {
+    const postId = req.params.postId;
+
+    // Find the post by ID
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json(new ApiError(404, null, "Post not found"));
+    }
+
+    // Return the number of likes
+    res.json(new ApiResponse(200, { commentCount: post.comments.length }, "comments counted"));
+  } catch (error) {
+    console.error("Error counting comments:", error);
+    return res.status(500).json(new ApiError(500, error, "Internal Server Error"));
+  }
+};
+
+
+export { uploadPost, getAllPostsByHashtag, likePost, countLikes, countComment };
   
