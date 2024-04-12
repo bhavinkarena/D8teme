@@ -3,9 +3,9 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Comment } from "../models/comment.model.js";
 import { Post } from "../models/post.model.js";
 import { UserProfile } from "../models/userprofile.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
-const createComment = async (req, res) => {
-  try {
+const createComment = asyncHandler(async (req, res) => {
     const { postId } = req.params;
     const { userId } = req.user;
     const { comment } = req.body;
@@ -34,16 +34,9 @@ const createComment = async (req, res) => {
       .json(
         new ApiResponse(200, newComment, "Comment created Successfully 👍")
       );
-  } catch (error) {
-    console.error("Error creating comment:", error);
-    return res
-      .status(500)
-      .json(new ApiError(500, error, "Internal Server Error"));
-  }
-};
+});
 
-const createReply = async (req, res) => {
-  try {
+const createReply = asyncHandler(async (req, res) => {
     const { commentId } = req.params;
     const { userId } = req.user;
     const { comment } = req.body;
@@ -78,15 +71,10 @@ const createReply = async (req, res) => {
     return res
       .status(201)
       .json(new ApiResponse(200, newComment, "Comment Replay Successfully 👍"));
-  } catch (error) {
-    console.error("Error creating reply comment:", error);
-    return res
-      .status(500)
-      .json(new ApiError(500, error, "Internal Server Error"));
-  }
-};
 
-const likeComment = async (req, res) => {
+});
+
+const likeComment = asyncHandler(async (req, res) => {
   const { commentId } = req.params; // Assuming postId is passed as a URL parameter
   const userId = req.user;
 
@@ -121,10 +109,9 @@ const likeComment = async (req, res) => {
 
   // Return a success response
   res.json(new ApiResponse(200, comment, "Comment liked successfully"));
-};
+});
 
-const countCommentLike = async (req, res) => {
-  try {
+const countCommentLike = asyncHandler(async (req, res) => {
     const commentId = req.params.commentId;
 
     // Find the post by ID
@@ -142,12 +129,6 @@ const countCommentLike = async (req, res) => {
         "Likes counted at comment"
       )
     );
-  } catch (error) {
-    console.error("Error counting likes:", error);
-    return res
-      .status(500)
-      .json(new ApiError(500, error, "Internal Server Error"));
-  }
-};
+});
 
 export { createComment, createReply, likeComment, countCommentLike };

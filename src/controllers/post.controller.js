@@ -3,9 +3,9 @@ import {Post} from "../models/post.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { UserProfile } from "../models/userprofile.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
-const uploadPost = async (req, res) => {
-    try {
+const uploadPost = asyncHandler(async (req, res) => {
       const userId = req.user;
       const { hashtags } = req.body;
   
@@ -31,14 +31,9 @@ const uploadPost = async (req, res) => {
       res.json(
         new ApiResponse(200, newPost, "Post Upload Successful 👍")
       );
-    } catch (error) {
-      console.error("Error uploading post:", error);
-      return res.status(500).json(new ApiError(500, error, "Internal Server Error"));
-    }
-};
+});
   
-const getAllPostsByHashtag = async (req, res) => {
-  try {
+const getAllPostsByHashtag = asyncHandler(async (req, res) => {
     const { hashtag } = req.body;
 
     // Find all posts with the specified hashtag
@@ -46,14 +41,10 @@ const getAllPostsByHashtag = async (req, res) => {
 
     // Return the posts
     res.json(new ApiResponse(200, posts, "Posts Retrieved Successfully"));
-  } catch (error) {
-    console.error("Error retrieving posts by hashtag:", error);
-    return res.status(500).json(new ApiError(500, error, "Internal Server Error"));
-  }
-};
 
-const likePost = async (req, res) => {
-  try {
+});
+
+const likePost = asyncHandler(async (req, res) => {
     const { postId } = req.params; // Assuming postId is passed as a URL parameter
     const userId = req.user;
     
@@ -86,14 +77,9 @@ const likePost = async (req, res) => {
 
     // Return a success response
     res.json(new ApiResponse(200, post, "Post liked successfully"));
-  } catch (error) {
-    console.error("Error liking post:", error);
-    return res.status(500).json(new ApiError(500, error, "Internal Server Error"));
-  }
-};
+});
 
-const countLikes = async (req, res) => {
-  try {
+const countLikes = asyncHandler(async (req, res) => {
     const postId = req.params.postId;
 
     // Find the post by ID
@@ -105,14 +91,10 @@ const countLikes = async (req, res) => {
 
     // Return the number of likes
     res.json(new ApiResponse(200, { likesCount: post.likes.length }, "Likes counted"));
-  } catch (error) {
-    console.error("Error counting likes:", error);
-    return res.status(500).json(new ApiError(500, error, "Internal Server Error"));
-  }
-};
 
-const countComment = async (req, res) => {
-  try {
+});
+
+const countComment = asyncHandler(async (req, res) => {
     const postId = req.params.postId;
 
     // Find the post by ID
@@ -124,11 +106,8 @@ const countComment = async (req, res) => {
 
     // Return the number of likes
     res.json(new ApiResponse(200, { commentCount: post.comments.length }, "comments counted"));
-  } catch (error) {
-    console.error("Error counting comments:", error);
-    return res.status(500).json(new ApiError(500, error, "Internal Server Error"));
-  }
-};
+
+});
 
 
 export { uploadPost, getAllPostsByHashtag, likePost, countLikes, countComment };
