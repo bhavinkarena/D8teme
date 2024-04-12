@@ -121,6 +121,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
 const getCurrentUser = asyncHandler(async (req, res) => {
   if (req.user.valid_email === true) {
     const userID = await UserProfile.find({ userID: req.user._id });
+    console.log(userID);
     const currentUser = await UserProfile.findById(userID[0]._id).select(
       "firstname lastname email profileImage DOB gender show_me looking_for Passions Sexuality"
     );

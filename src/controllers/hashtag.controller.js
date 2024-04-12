@@ -45,12 +45,12 @@ const getAllPassionHashtag = asyncHandler(async (req, res) => {
 
 // const addDefaultHashtags = asyncHandler(async (req, res) => {
 //   const hashtags = [
-//     "#relationshipgoals", "#couplegoals", "#love", "#partnership", "#bff", "#family",
-//     "#motherhood", "#fatherhood", "#parenting", "#marriage", "#engagement", "#wedding",
-//     "#dating", "#longdistancerelationships", "#friendship", "#companionship", "#teamwork",
-//     "#supportsystem", "#soulmates", "#videooftheday", "#picoftheday", "#beautiful", "#beauty",
-//     "#happy", "#art", "#smile", "#fashion", "#nature", "#cute", "#hot", "#selfie", "#travel",
-//     "#friends", "#fun", "#style", "#fit", "#exercise", "#gym", "#work"
+//     "relationshipgoals", "couplegoals", "love", "partnership", "bff", "family",
+//     "motherhood", "fatherhood", "parenting", "marriage", "engagement", "wedding",
+//     "dating", "longdistancerelationships", "friendship", "companionship", "teamwork",
+//     "supportsystem", "soulmates", "videooftheday", "picoftheday", "beautiful", "beauty",
+//     "#happy", "art", "smile", "fashion", "nature", "cute", "hot", "selfie", "travel",
+//     "friends", "fun", "style", "fit", "exercise", "gym", "work"
 //   ];
 
 //   const existingHashtags = await Hashtag.find({ hashtag: { $in: hashtags } });
@@ -65,22 +65,22 @@ const getAllPassionHashtag = asyncHandler(async (req, res) => {
 
 // const addDefaultHashtags = asyncHandler(async (req, res) => {
 //   const hashtags = [
-//     "#hiking", "#gardening", "#painting", "#photography", "#cooking", "#nightout",
-//     "#livemusic", "#music", "#restaurants", "#simplethings", "#drawing", "#woodworking",
-//     "#fishing", "#homeimprovement", "#writing", "#reading", "#relaxation", "#yoga",
-//     "#cycling", "#running", "#swimming", "#surfing", "#scubadiving", "#nature", "#kids",
-//     "#livinglife", "#success", "#petlovers", "#innovative", "#lifeisaboutlaughs",
-//     "#nobullshit", "#therealme", "#catlover", "#doglover", "#livelife", "#fearless",
-//     "#strong", "#fetishes", "#sports", "#football", "#baseball", "#basketball",
-//     "#business", "#fitness", "#bethebestyou", "#openrelationship", "#single", "#married",
-//     "#love", "#open", "#women", "#men", "#menandwomen", "#family", "#wine", "#skydiving",
-//     "#inthemoment", "#active", "#pottery", "#sculpture", "#calligraphy", "#modelmaking",
-//     "#astronomy", "#rockclimbing", "#kayaking", "#skateboarding", "#snowboarding",
-//     "#skiing", "#gaming", "#musicproduction", "#dancing", "#acting", "#cosplay",
-//     "#virtualreality", "#dating", "#personality", "#dominant", "#submissive", "#equal",
-//     "#traditional", "#modern", "#musician", "#leader", "#dreamer", "#organized",
-//     "#openminded", "#cigar", "#supportive", "#golf", "#boating", "#yacht", "#sailing",
-//     "#fun", "#easygoing", "#life"
+//     "hiking", "gardening", "painting", "photography", "cooking", "nightout",
+//     "livemusic", "music", "restaurants", "simplethings", "drawing", "woodworking",
+//     "fishing", "homeimprovement", "writing", "reading", "relaxation", "yoga",
+//     "cycling", "running", "swimming", "surfing", "scubadiving", "nature", "kids",
+//     "livinglife", "success", "petlovers", "innovative", "lifeisaboutlaughs",
+//     "nobullshit", "therealme", "catlover", "doglover", "livelife", "fearless",
+//     "strong", "fetishes", "sports", "football", "baseball", "basketball",
+//     "business", "fitness", "bethebestyou", "openrelationship", "single", "married",
+//     "love", "open", "women", "men", "menandwomen", "family", "wine", "skydiving",
+//     "inthemoment", "active", "pottery", "sculpture", "calligraphy", "modelmaking",
+//     "astronomy", "rockclimbing", "kayaking", "skateboarding", "snowboarding",
+//     "skiing", "gaming", "musicproduction", "dancing", "acting", "cosplay",
+//     "virtualreality", "dating", "personality", "dominant", "submissive", "equal",
+//     "traditional", "modern", "musician", "leader", "dreamer", "organized",
+//     "openminded", "cigar", "supportive", "golf", "boating", "yacht", "sailing",
+//     "fun", "easygoing", "life"
 //   ];
 
 //   const existingHashtags = await Hashtag.find({ hashtag: { $in: hashtags } });
