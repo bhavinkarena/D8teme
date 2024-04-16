@@ -1,9 +1,9 @@
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import {Post} from "../models/post.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { UserProfile } from "../models/userprofile.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { uploadOnS3 } from "../utils/s3.js";
 
 const uploadPost = asyncHandler(async (req, res) => {
       const userId = req.user;
@@ -11,7 +11,7 @@ const uploadPost = asyncHandler(async (req, res) => {
   
       // Upload the file on Cloudinary
       let post = req.files.post[0].path;
-      const cloudinaryResponse = await uploadOnCloudinary(post);
+      const cloudinaryResponse = await uploadOnS3(post);
   
       if (!cloudinaryResponse) {
         return res.status(500).json(new ApiError(500, null, "Something went wrong while uploading the file"));
@@ -21,7 +21,7 @@ const uploadPost = asyncHandler(async (req, res) => {
       const newPost = new Post({
         userId: userId,
         hashtags: hashtags,
-        post: cloudinaryResponse.url, // save the Cloudinary URL of the uploaded file
+        post: cloudinaryResponse.Location, // save the Cloudinary URL of the uploaded file
       });
   
       // Save the new post object in the database
@@ -109,6 +109,4 @@ const countComment = asyncHandler(async (req, res) => {
 
 });
 
-
 export { uploadPost, getAllPostsByHashtag, likePost, countLikes, countComment };
-  

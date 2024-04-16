@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { UserProfile } from "../models/userprofile.model.js";
 import { User } from "../models/user.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { uploadOnS3 } from "../utils/s3.js";
 
 const createUser = asyncHandler(async (req, res) => {
   try {
@@ -38,8 +38,8 @@ const createUser = asyncHandler(async (req, res) => {
         console.log(files);
         for (const file of files) {
           const coverImageLocalPath = file.path;
-          const profileimage = await uploadOnCloudinary(coverImageLocalPath);
-          profileImageUrls.push(profileimage.url);
+          const profileimage = await uploadOnS3(coverImageLocalPath);
+          profileImageUrls.push(profileimage.Location);
         }
       }
 
