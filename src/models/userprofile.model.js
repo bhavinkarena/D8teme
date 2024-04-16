@@ -43,7 +43,7 @@ const userprofileSchema = new Schema(
     },
     gender: {
       type: String,
-      enum: ["Men", "Women", "Other"],
+      enum: ["men", "women", "other"],
       require: true,
     },
     show_gender: {
@@ -52,7 +52,7 @@ const userprofileSchema = new Schema(
     },
     show_me: {
       type: String,
-      enum: ["Men", "Women", "Everyone"],
+      enum: ["men", "women", "everyone"],
       require: true,
     },
     looking_for: {
