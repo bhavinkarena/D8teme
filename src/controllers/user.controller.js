@@ -34,7 +34,6 @@ const registerUser = asyncHandler(async (req, res) => {
   ) {
     return res.status(400).json(new ApiError(400, null, "All fields are required"));
   }
-  console.log("object");
   // Check if password and confirm pass word match
   if (password !== confirmPassword) {
     return res.status(400).json(new ApiError(400, null, "Passwords do not match"));
