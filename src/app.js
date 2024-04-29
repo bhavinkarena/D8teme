@@ -10,6 +10,9 @@ import {
 
 const app = express();
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(
   session({
     secret: "bhavinkarena",
@@ -29,9 +32,6 @@ app.get("/", (req, res) => {
 
 googlePassport(passport);
 facebookPassport(passport);
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(
   cors({
