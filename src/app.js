@@ -10,9 +10,6 @@ import {
 
 const app = express();
 
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.use(
   session({
     secret: "bhavinkarena",
@@ -20,6 +17,9 @@ app.use(
     saveUninitialized: false,
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(express.static("public"));
 app.use(cookieParser());
