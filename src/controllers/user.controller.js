@@ -218,6 +218,7 @@ const facebookPassport = asyncHandler(async (passport) => {
         callbackURL: "https://d8teme-aod4.onrender.com/api/v1/facebook/callback",
         scope: ["email"],
         profileFields: ["id", "displayName", "emails"],
+        enableProof: true
       },
       async function (accessToken, refreshToken, profile, cb) {
         try {
