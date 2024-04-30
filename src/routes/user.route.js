@@ -39,7 +39,7 @@ userRouter.get(
 
 userRouter.get(
   "/facebook",
-  passport.authenticate("facebook", { authType: "reauthenticate", scope: ["profile", "email"] })
+  passport.authenticate("facebook", {scope: ["email"] })
 );
 
 userRouter.get(
