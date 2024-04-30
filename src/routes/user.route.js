@@ -46,8 +46,10 @@ userRouter.get(
   "/facebook/callback",
   passport.authenticate("facebook", { failureRedirect: "/user/login" }),
   function (req, res) {
+    console.log("Facebook authentication successful");
     res.redirect("/");
   }
 );
+
 
 export default userRouter;
