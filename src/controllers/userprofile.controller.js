@@ -33,6 +33,7 @@ const createUser = asyncHandler(async (req, res) => {
       }
 
       let profileImageUrls = [];
+      console.log(req.files);
       if (req.files) {
         const files = req.files;
         console.log(files);
@@ -42,6 +43,7 @@ const createUser = asyncHandler(async (req, res) => {
           profileImageUrls.push(profileimage.Location);
         }
       }
+      console.log(profileImageUrls);
 
       const userprofile = await UserProfile.create({
         userID,
